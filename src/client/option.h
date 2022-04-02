@@ -3,10 +3,18 @@
 #ifndef __OPTION_H
 #define __OPTION_H
 
+#define TRUE 1
+#define FALSE 0
+
+#define AUTO_MODE 0
+#define MANUAL_MODE 1
+#define INVALID_OPTION_MODE 2
+
 struct __option {
     int help;
 
-    char* mode; // manual or automatic
+    int mode; // manual or automatic
+    int file_set;
     char* file; // only for manual mode
 };
 
