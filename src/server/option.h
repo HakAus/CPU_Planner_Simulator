@@ -4,14 +4,10 @@
 struct __option {
     int help;
 
-    int test_fcfs;
+    int test_fifo;
     int test_np_sjf;
-    int test_p_sjf;
-    int test_np_priority;
-    int test_p_priority;
+    int test_np_hpf;
     int test_rr;
-    int test_np_srtf;
-    int test_p_srtf;
 
     int num_of_processes;
     int round_robin_time_quantum;

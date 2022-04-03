@@ -13,14 +13,11 @@
 void parse_option (int argc, char ** argv, option_t * opt) {
     // default
     opt->help = FALSE;
-    opt->test_fcfs = FALSE;
+    opt->test_fifo = FALSE;
     opt->test_np_sjf = FALSE;
-    opt->test_p_sjf = FALSE;
-    opt->test_np_priority = FALSE;
-    opt->test_p_priority = FALSE;
+    opt->test_np_hpf = FALSE;
     opt->test_rr = FALSE;
-    opt->test_np_srtf = FALSE;
-    opt->test_p_srtf = FALSE;
+
     opt->num_of_processes = DEFAULT_NUM_PROCESS;
     opt->round_robin_time_quantum = DEFAULT_TIME_QUANTUM;
 
@@ -41,7 +38,7 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             printf ("\n");
             printf ("with no scheduler options simulate all cpu scheduler algorithms\n");
             printf ("scheduler options are:\n");
-            printf ("   --fcfs          simulate Fisrt Come First Served\n");
+            printf ("   --fifo          simulate Fisrt Come First Served\n");
             printf ("   --np-sjf        simulate Non-Preemptive Shortest Job First\n");
             printf ("   --p-sjf         simulate Preemptive Shortest Job First\n");
             printf ("   --np-priority   simulate Non-Preemptive Priority\n");
@@ -53,22 +50,14 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             printf ("Korea Univ. KOSMOS\n");
             opt->help = TRUE;
             return;
-        } else if (strcmp ("--fcfs", argv [i]) == 0) {
-            opt->test_fcfs = TRUE;
+        } else if (strcmp ("--fifo", argv [i]) == 0) {
+            opt->test_fifo = TRUE;
         } else if (strcmp ("--np-sjf", argv [i]) == 0) {
             opt->test_np_sjf = TRUE;
-        } else if (strcmp ("--p-sjf", argv [i]) == 0) {
-            opt->test_p_sjf = TRUE;
         } else if (strcmp ("--np-priority", argv [i]) == 0) {
-            opt->test_np_priority = TRUE;
-        } else if (strcmp ("--p-priority", argv [i]) == 0) {
-            opt->test_p_priority = TRUE;
+            opt->test_np_hpf = TRUE;
         } else if (strcmp ("--rr", argv [i]) == 0) {
             opt->test_rr = TRUE;
-        } else if (strcmp ("--np-srtf", argv [i]) == 0) {
-            opt->test_np_srtf = TRUE;
-        } else if (strcmp ("--p-srtf", argv [i]) == 0) {
-            opt->test_p_srtf = TRUE;
         } else {
             opt->help = TRUE;
             printf ("Please check arguments\n");
@@ -76,22 +65,14 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             return;
         }
     }
-    if (!opt->test_fcfs
+    if (!opt->test_fifo
     && !opt->test_np_sjf
-    && !opt->test_p_sjf
-    && !opt->test_np_priority
-    && !opt->test_p_priority
-    && !opt->test_rr
-    && !opt->test_np_srtf
-    && !opt->test_p_srtf) {
+    && !opt->test_np_hpf
+    && !opt->test_rr) {
         // if all false
-        opt->test_fcfs = TRUE;
+        opt->test_fifo = TRUE;
         opt->test_np_sjf = TRUE;
-        opt->test_p_sjf = TRUE;
-        opt->test_np_priority = TRUE;
-        opt->test_p_priority = TRUE;
+        opt->test_np_hpf = TRUE;
         opt->test_rr = TRUE;
-        opt->test_np_srtf = TRUE;
-        opt->test_p_srtf = TRUE;
     }
 }
