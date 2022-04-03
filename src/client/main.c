@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "option.h"
+#include "reader.h"
 
 int main(int argc, char** argv) {
 
@@ -11,6 +12,7 @@ int main(int argc, char** argv) {
             printf("Se escogio el modo automatico");
         } else if (opt.mode == MANUAL_MODE) {
             printf("Se escogio el modo manual");
+            read("processes.txt");
         }
     } else {
         printf("Inténtelo de nuevo.");
