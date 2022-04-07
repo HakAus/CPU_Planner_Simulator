@@ -8,7 +8,6 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
-
 #include "option.h"
 
 int main(int argc, char** argv) {
