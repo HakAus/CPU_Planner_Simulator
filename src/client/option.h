@@ -14,8 +14,16 @@ struct __option {
     int help;
 
     int mode; // manual or automatic
+
+    // For manual mode
     int file_set;
     char* file; // only for manual mode
+
+    // For automatic mode
+    int burstMin;
+    int burstMax;
+    int creationMin;
+    int creationMax;
 };
 
 typedef struct __option option_t;

@@ -105,7 +105,6 @@ void init_reader(void *arg) {
 
     char * file_name = arg;
     pthread_t reader_thread;
-    size_t i;
     int *thread_exit_status;
 
     printf("Dentro de init reader, el nombre del archivo es: %s\n",file_name);
@@ -118,30 +117,3 @@ void init_reader(void *arg) {
         printf("Client halted normally");
     }
 }
-
-// char* readLine(FILE* fp, const char* file_name) {
-//     char * line = NULL;
-//     size_t len = 0;
-//     ssize_t read;
-
-//     fp = fopen(file_name, "r");
-//     if (fp == NULL)
-//         exit(EXIT_FAILURE);
-
-//     if ((read = getline(&line, &len, fp)) != -1) {
-//         return line;
-//     }
-
-//     // while ((read = getline(&line, &len, fp)) != -1) {
-//     //     printf("Retrieved line of length %zu:\n", read);
-//     //     printf("%s", line);
-//     // }
-
-//     // if (line)
-//     //     free(line);
-//     // exit(EXIT_SUCCESS);
-// }
-
-// void closeFile(FILE* fp) {
-//     fclose(fp);
-// }
