@@ -3,6 +3,13 @@
 
 #include "client.h"
 
+int guard(int r, char * err) {
+    if (r == -1) { 
+        perror(err);
+        exit(1); 
+    } 
+    return r; 
+}
 
 int start_connection()
 {
@@ -38,4 +45,10 @@ int start_connection()
 
     // and then close the socket
     // close(listen_fd);
+}
+
+void send_message(int socket_fd, char* message) {
+    int toServer = guard(send(socket_fd, message, sizeof(message), 0), "Error sending message to server\n");
+    recv(socket_fd, server_response, sizeof(server_response), 0);
+    printf("Server response: %s\n", server_response);
 }

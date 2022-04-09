@@ -11,7 +11,7 @@
 char server_response[256];
 
 int start_connection();
-
+void send_message(int socket_fd, char* message);
 void end_connection();
 
 #endif

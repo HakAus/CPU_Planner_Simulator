@@ -1,9 +1,12 @@
+#ifndef __PROCESS_GENERATOR_H
+#define __PROCESS_GENERATOR_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#ifndef __PROCESS_GENERATOR_H
-#define __PROCESS_GENERATOR_H
+#include <string.h>
+
 
 #define ACTIVE 1
 #define INACTIVE 0
@@ -15,6 +18,7 @@ struct generator_info {
     int max_burst;
     int min_creation;
     int max_creation;
+    int socket_fd;
 };
 
 void * generate_processes(void * info);

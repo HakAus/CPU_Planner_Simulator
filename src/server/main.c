@@ -9,76 +9,79 @@
 #include <unistd.h>
 
 #include "option.h"
+#include "server.h"
 
 int main(int argc, char** argv) {
 
+    setup_server();
+    
 
-    if (argc > 1)
-    {
-        // PASO 1, definir variables
-        int fd, fd2, longitud_cliente, puerto;
-        puerto = atoi(argv[1]);
+    // if (argc > 1)
+    // {
+    //     // PASO 1, definir variables
+    //     int fd, fd2, longitud_cliente, puerto;
+    //     puerto = atoi(argv[1]);
 
-        // Se necesitan dos estructuras del tipo sockaddr
-        // La primera guarda la dirección del servidor
-        // La segunda guarda la dirección del cliente
+    //     // Se necesitan dos estructuras del tipo sockaddr
+    //     // La primera guarda la dirección del servidor
+    //     // La segunda guarda la dirección del cliente
 
-        struct sockaddr_in server, client;
+    //     struct sockaddr_in server, client;
 
-        // Configurar la estructura server
-        server.sin_family = AF_INET; // Protocolo de internet
-        server.sin_port = htons(puerto); // Puerto
-        server.sin_addr.s_addr = INADDR_ANY; // Dirección IP (cualquiera puede conectarse)
-        bzero(&(server.sin_zero), 8); // Poner a cero el resto de la estructura
+    //     // Configurar la estructura server
+    //     server.sin_family = AF_INET; // Protocolo de internet
+    //     server.sin_port = htons(puerto); // Puerto
+    //     server.sin_addr.s_addr = INADDR_ANY; // Dirección IP (cualquiera puede conectarse)
+    //     bzero(&(server.sin_zero), 8); // Poner a cero el resto de la estructura
 
-        // PASO 2, crear el socket
-        if((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        {
-            perror("Error con la aperture del socket. \n");
-            exit(-1);
-        }
+    //     // PASO 2, crear el socket
+    //     if((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+    //     {
+    //         perror("Error con la aperture del socket. \n");
+    //         exit(-1);
+    //     }
 
-        // PASO 3, enlazar el socket con la estructura server
-        if(bind(fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
-        {
-            printf("Error en el enlace.\n");
-            exit(-1);
-        }
+    //     // PASO 3, enlazar el socket con la estructura server
+    //     if(bind(fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
+    //     {
+    //         printf("Error en el enlace.\n");
+    //         exit(-1);
+    //     }
 
-        // PASO 4, modo escucha
-        if(listen(fd, 5) == -1)
-        {
-            printf("Error en el modo escucha.\n");
-            exit(-1);
-        }
+    //     // PASO 4, modo escucha
+    //     if(listen(fd, 5) == -1)
+    //     {
+    //         printf("Error en el modo escucha.\n");
+    //         exit(-1);
+    //     }
 
-        // PASO 5, aceptar conexiones
-        int contador = 1;
-        while(1)
-        {
-            longitud_cliente = sizeof(struct sockaddr_in);
-            // Llamada al sistema accept
-            if((fd2 = accept(fd, (struct sockaddr *)&client, &longitud_cliente)) == -1)
-            {
-                printf("Error en la aceptacion de la conexion.\n");
-                exit(-1);
-            }
+    //     // PASO 5, aceptar conexiones
+    //     int contador = 1;
+    //     while(1)
+    //     {
+    //         longitud_cliente = sizeof(struct sockaddr_in);
+    //         // Llamada al sistema accept
+    //         if((fd2 = accept(fd, (struct sockaddr *)&client, &longitud_cliente)) == -1)
+    //         {
+    //             printf("Error en la aceptacion de la conexion.\n");
+    //             exit(-1);
+    //         }
 
-            char message[100]; // = "Hola cliente: ";
-            sprintf(message, "Hola cliente: %d\n", contador);
-            // snprintf(message, 12, "Hola cliente %d", contador);
-            send(fd2, message, 26, 0);
+    //         char message[100]; // = "Hola cliente: ";
+    //         sprintf(message, "Hola cliente: %d\n", contador);
+    //         // snprintf(message, 12, "Hola cliente %d", contador);
+    //         send(fd2, message, 26, 0);
 
-            close(fd2); // Cerrar el socket
+    //         close(fd2); // Cerrar el socket
 
-            contador += 1;
-        }
+    //         contador += 1;
+    //     }
 
-        close(fd); 
+    //     close(fd); 
 
-    }else{
-        printf("No se ingresó el puerto por parámetro.");
-    }
+    // }else{
+    //     printf("No se ingresó el puerto por parámetro.");
+    // }
     
 
 

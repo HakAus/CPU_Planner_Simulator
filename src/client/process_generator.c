@@ -1,5 +1,6 @@
 #include "process_generator.h"
 #include "process.h"
+#include "client.h"
 
 void * generate_processes(void * info) {
     struct generator_info* gi = info;
@@ -14,6 +15,13 @@ void * generate_processes(void * info) {
         printf("CPU remain time: %d\n", process->cpu_remain_time);
         printf("Priority: %d\n", process->priority);
         printf("Termination time: %d\n", process->termination_time);
+
+        // char number[12];
+        // snprintf(number, 12, "%d", (int) process->pid);
+        // char * message = strcat("Process generated: ", number);
+        // message = strcat(message, "\n");
+        char * message = "Hello\n";
+        send_message(gi->socket_fd, message);
         sleep(1);
     }
 
@@ -21,6 +29,8 @@ void * generate_processes(void * info) {
 }
 
 void init_process_generator(int burstMin, int burstMax, int creationMin, int creationMax) {
+
+    int client_socket = start_connection();
 
     pthread_t generator_thread;
     int *thread_exit_status;
@@ -32,6 +42,7 @@ void init_process_generator(int burstMin, int burstMax, int creationMin, int cre
     info->max_burst = burstMax;
     info->min_creation = creationMin;
     info->max_creation = creationMax;
+    info->socket_fd = client_socket;
     
     pthread_create(&generator_thread, NULL, generate_processes, (void *) info);
 

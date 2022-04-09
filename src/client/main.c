@@ -2,14 +2,7 @@
 #include "option.h"
 #include "reader.h"
 #include "process_generator.h"
-
-// int guard(int r, char * err) {
-//     if (r == -1) { 
-//         perror(err);
-//         exit(1); 
-//     } 
-//     return r; 
-// }
+#include "client.h"
 
 // void * thread_func(void * arg) {
 //   intptr_t conn_fd = (int) arg;
