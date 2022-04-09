@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <string.h>
+#include "util.h"
 
 struct reader_args {
     char* filename;

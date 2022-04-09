@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
-
+#include "util.h"
 
 #define ACTIVE 1
 #define INACTIVE 0

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "client.h"
 
 int guard(int r, char * err) {
@@ -15,9 +14,6 @@ int start_connection()
 {
      // create a socket
     int socket_fd = guard(socket(AF_INET, SOCK_STREAM, 0), "Could not create TCP listening socket");
-   
-    // int network_socket;
-    // network_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     // specify an address for the socket
     struct sockaddr_in server_address;
@@ -34,21 +30,15 @@ int start_connection()
     }
 
     return socket_fd;
-
-    // send(listen_fd, )
-
-    // receive data from the server
-    // recv(socket_fd, &server_response, sizeof(server_response), 0);
-
-    // print out the server's response
-    // printf("The server sent the data %s\n", server_response);
-
-    // and then close the socket
-    // close(listen_fd);
 }
 
-void send_message(int socket_fd, char* message) {
+void send_message(int socket_fd, process_t * process) {
+    char message[256];
+    const int len = sprintf(message, "%d,%d,%d,%d,%d,%d", 
+                            process->pid, process->arrival_time,
+                            process->cpu_burst_time, process->cpu_remain_time,
+                            process->termination_time, process->priority);
     int toServer = guard(send(socket_fd, message, sizeof(message), 0), "Error sending message to server\n");
-    recv(socket_fd, server_response, sizeof(server_response), 0);
+    guard(recv(socket_fd, server_response, sizeof(server_response), 0), "Error receiving message from the server");
     printf("Server response: %s\n", server_response);
 }

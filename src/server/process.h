@@ -9,10 +9,6 @@ struct __process {
     unsigned int cpu_remain_time;
     unsigned int termination_time;
 
-    unsigned int io_start_time;
-    unsigned int io_burst_time;
-    unsigned int io_remain_time;
-
     unsigned int priority;
 };
 
@@ -22,17 +18,13 @@ typedef struct __process process_t;
  * pid can have value from 1 (0 means idle)
  * you SHOULD call srand before call create_process
  */
-process_t * create_process (unsigned int pid);
+process_t * create_process (int pid, int min_burst, int max_burst,
+                            int min_creation, int max_creation);
 
 /* decrease cpu remain time by 1
  * return TRUE when cpu remain time becomes 0
  */
 int run (process_t * process);
-
-/* decrease io remain time by 1
- * return TRUE when io remain time becoms 0
- */
-int io (process_t * process);
 
 /* delete process
  */

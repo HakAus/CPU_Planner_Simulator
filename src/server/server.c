@@ -1,4 +1,5 @@
 #include "server.h"
+#include "process.h"
 
 #define ACTIVE 1
 #define INACTIVE 0
@@ -43,13 +44,32 @@ void setup_server() {
 void * run_server(void * args) {
     struct server_info *info = args;
     char from_client[256];
-    char server_response[256] = "Hello back!";
+    char server_response[256] = "OK";
     // listen for connections
     int client_socket;
     client_socket = accept(info->server_socket, NULL, NULL);
     while (running) {
         recv(client_socket, from_client, sizeof(from_client), 0);
-        printf("Mensaje del cliente: %s", from_client);
+        int pid, arrival_time, cpu_burst_time, cpu_remain_time, termination_time, priority; 
+        process_t * p = (process_t *) malloc (sizeof (process_t));
+        sscanf(from_client, "%d,%d,%d,%d,%d,%d",
+               &pid, &arrival_time, &cpu_burst_time, 
+               &cpu_remain_time, &termination_time, &priority);
+
+        p->pid = pid;
+        p->arrival_time = arrival_time;
+        p->cpu_burst_time = cpu_burst_time;
+        p->cpu_remain_time = cpu_remain_time;
+        p->termination_time = termination_time;
+        p->priority = priority;
+
+        printf("Mensaje del cliente: \n");
+        printf("PID: %d\n", p->pid);
+        printf("Arrival time: %d\n", p->arrival_time);
+        printf("CPU burst time: %d\n", p->cpu_burst_time);
+        printf("CPU remain time: %d\n", p->cpu_remain_time);
+        printf("Priority: %d\n", p->priority);
+        printf("Termination time: %d\n", p->termination_time);
         send(client_socket, server_response, sizeof(server_response), 0);
         // send the message to the client
     }
