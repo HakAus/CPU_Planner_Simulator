@@ -30,7 +30,7 @@ echocompiling:
 debug: $(TARGET)
 
 $(TARGET): $(OBJS) $(ALGOS)
-	@$(CC) $(MAIN) -o $@ $^ $(CFLAGS)
+	@$(CC) $(MAIN) -o $@ $^ $(CFLAGS) -lpthread
 
 $(OBJS): %.o: $(SRC)/%.c 
 	@$(CC) -c $< -o $@ $(CFLAGS)

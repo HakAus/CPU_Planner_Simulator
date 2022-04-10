@@ -55,9 +55,6 @@ int main(int argc, char** argv) {
     js_register_cpu_scheduler (js, cs);
 
     setup_server(js, cs);
-    // create_processes (js, 5);
-    // print_processes (js);
-
 
     return 0;
 }
