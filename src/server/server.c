@@ -1,10 +1,9 @@
 #include "server.h"
-#include "process.h"
 
 #define ACTIVE 1
 #define INACTIVE 0
 
-int running = INACTIVE;
+int scheduling = INACTIVE;
 int stop = INACTIVE;
 
 void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler) {
@@ -32,7 +31,7 @@ void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_schedul
     // waiting for this socket at a certain point in time. 
     listen(s_info->server_socket, 5); 
 
-    running = ACTIVE;
+    scheduling = ACTIVE;
 
     pthread_t server_thread;
     printf("Running server ...\n");
@@ -56,7 +55,7 @@ void * schedule_jobs(void * args) {
     int client_socket = accept(info->server_socket, NULL, NULL);
     
     // Job scheduler main loop
-    while (running) {
+    while (scheduling) {
 
         // Get and serialize process from client
         recv(client_socket, from_client, sizeof(from_client), 0);

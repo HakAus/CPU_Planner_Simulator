@@ -12,6 +12,7 @@
 
 #include "job_scheduler.h"
 #include "cpu_scheduler.h"
+#include "process.h"
 
 struct server_info {
     int server_socket;

@@ -14,7 +14,7 @@ cpu_scheduler_t * create_cpu_scheduler (char * algo, clk_t * clock, ...) {
     cpu_scheduler_t * cs = (cpu_scheduler_t *) malloc (sizeof (cpu_scheduler_t));
 
     cs->algo = (char *) malloc (sizeof (algo));
-    memcpy (cs->algo, algo, sizeof (algo));
+    memcpy (cs->algo, algo, sizeof(cs->algo));
     cs->clk = clock;
 
     if (strcmp ("fifo", algo) == 0) {

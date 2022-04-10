@@ -4,12 +4,9 @@
 #include "clock.h"
 #include "process.h"
 #include "record.h"
-#include "io_device.h"
-
 struct __cpu {
     clk_t * clk;
     record_t * record;
-    io_device_t * io;
     process_t * process;
 };
 
@@ -36,9 +33,5 @@ int is_running (cpu_t * cpu);
  * orig will store that process
  */
 void execute (cpu_t * cpu, process_t * new, process_t ** orig);
-
-/* register io device
- */
-void register_io_device (cpu_t * cpu, io_device_t * io_device);
 
 #endif

@@ -11,10 +11,9 @@
 #include "option.h"
 #include "process.h"
 #include "clock.h"
+// #include "server.h"
 #include "cpu_scheduler.h"
 #include "job_scheduler.h"
-#include "io_device.h"
-    
 
 int main(int argc, char** argv) { 
     
@@ -26,7 +25,6 @@ int main(int argc, char** argv) {
     cpu_t * cpu = create_cpu (clk);
     
     job_scheduler_t * js = create_job_scheduler (clk);
-    io_device_t * io_device = create_io_device (clk);
     cpu_scheduler_t * cs;
     
 
@@ -56,7 +54,7 @@ int main(int argc, char** argv) {
     
     js_register_cpu_scheduler (js, cs);
 
-    setup_server(js, cs);
+    // setup_server(js, cs);
     // create_processes (js, 5);
     // print_processes (js);
 

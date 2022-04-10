@@ -1,5 +1,5 @@
 #include "../cpu.h"
-#include "p_hpf.h"
+#include "hpf.h"
 #include "np_hpf.h"
 
 #define QUEUE struct __priority_queue
