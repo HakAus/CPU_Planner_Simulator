@@ -25,5 +25,6 @@ struct server_info {
 
 void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler);
 void * schedule_jobs(void * args);
+void * run_clock(void * clock);
 
 #endif

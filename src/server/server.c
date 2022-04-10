@@ -37,7 +37,7 @@ void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_schedul
     s_info->clock = create_clock();
     printf("Running server ...\n");
 
-    pthread_create(&clock_thread, NULL, run_clock, s_info->clock);
+    pthread_create(&clock_thread, NULL, run_clock, (void*) s_info->clock);
     pthread_create(&server_thread, NULL, schedule_jobs, (void*) s_info);
 
     pthread_join(server_thread, (void**)&(thread_exit_status));
@@ -49,7 +49,7 @@ void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_schedul
 }
 
 void * run_clock(void * clock) {
-    clk_t * clk = clock;
+    struct clk_t * clk = clock;
     while (1) {
         clocking(clk);
         sleep(1);
@@ -95,8 +95,9 @@ void * schedule_jobs(void * args) {
         printf("Priority: %d\n", p->priority);
         printf("Termination time: %d\n", p->termination_time);
 
+
         // put process in ready queue
-        js_enqueue(info->job_scheduler->queue, p);\
+        // info->job_scheduler->queue(info->job_scheduler->queue, p);  // LINEA CON ERROR
 
         send(client_socket, server_response, sizeof(server_response), 0);
         // send the message to the client
