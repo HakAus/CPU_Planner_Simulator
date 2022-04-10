@@ -1,14 +1,8 @@
 #include <stdio.h>
 #include "option.h"
 #include "reader.h"
-
-// int guard(int r, char * err) {
-//     if (r == -1) { 
-//         perror(err);
-//         exit(1); 
-//     } 
-//     return r; 
-// }
+#include "process_generator.h"
+#include "client.h"
 
 // void * thread_func(void * arg) {
 //   intptr_t conn_fd = (int) arg;
@@ -37,7 +31,8 @@ int main(int argc, char** argv) {
 
     if (opt.mode !=  INVALID_OPTION_MODE) {
         if (opt.mode == AUTO_MODE) {
-            printf("Se escogio el modo automatico");
+            printf("Se van a generar los procesos automaticamente\n");
+            init_process_generator(opt.burstMin, opt.burstMax, opt.creationMin, opt.creationMax);
         } else if (opt.mode == MANUAL_MODE) {
             printf("Se escogio el modo manual\n");
             init_reader(opt.file);
@@ -46,20 +41,5 @@ int main(int argc, char** argv) {
         printf("Inténtelo de nuevo.");
     }
     
-    
     return 0;
 }
-
-// void * hello(void *input) {
-    
-//     printf("%s\n", (char *)input);
-//     pthread_exit(NULL);
-// }
-
-// int main(void) {
-//     pthread_t tid;
-//     char * name = "austin";
-//     pthread_create(&tid, NULL, hello, &name);
-//     pthread_join(tid, NULL);
-//     return 0;
-// }

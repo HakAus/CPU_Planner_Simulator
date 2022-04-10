@@ -14,7 +14,7 @@
 #include "cpu_scheduler.h"
 #include "job_scheduler.h"
 #include "io_device.h"
-
+    
 
 int main(int argc, char** argv) { 
     
@@ -56,8 +56,9 @@ int main(int argc, char** argv) {
     
     js_register_cpu_scheduler (js, cs);
 
-    create_processes (js, 5);
-    print_processes (js);
+    setup_server(js, cs);
+    // create_processes (js, 5);
+    // print_processes (js);
 
 
     return 0;
