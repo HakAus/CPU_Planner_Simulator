@@ -41,6 +41,10 @@ void execute (cpu_t * this, process_t * new, process_t ** orig) {
     this->process = new;
 }
 
+<<<<<<< Updated upstream
 void register_io_device (cpu_t * this, io_device_t * io) {
     this->io = io;
 }
+=======
+
+>>>>>>> Stashed changes
