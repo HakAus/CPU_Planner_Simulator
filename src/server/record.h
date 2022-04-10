@@ -26,7 +26,7 @@ void delete_record (record_t * record);
 
 /* write pid to and of list
  */
-void write (record_t * record, int pid);
+void _write (record_t * record, int pid);
 
 /* print gantt_chart
  */

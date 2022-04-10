@@ -25,10 +25,10 @@ cpu_scheduler_t * create_cpu_scheduler (char * algo, clk_t * clock, ...) {
         cs->queue = create_np_sjf_queue ();
         cs->enqueue = np_sjf_enqueue;
         cs->scheduling = np_sjf_scheduling;    
-    } else if (strcmp ("np_hpf", algo) == 0) {
-        cs->queue = create_np_hpf_queue ();
-        cs->enqueue = np_hpf_enqueue;
-        cs->scheduling = np_hpf_scheduling;
+    // } else if (strcmp ("np_hpf", algo) == 0) {
+    //     cs->queue = create_np_hpf_queue ();
+    //     cs->enqueue = np_hpf_enqueue;
+    //     cs->scheduling = np_hpf_scheduling;
     } else if (strcmp ("rr", algo) == 0) {
         va_list vl;
         va_start (vl, 1);

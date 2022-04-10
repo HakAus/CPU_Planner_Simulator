@@ -4,7 +4,7 @@
 #include "clock.h"
 #include "process.h"
 #include "record.h"
-// #include "io_device.h"
+#include "io_device.h"
 
 struct __cpu {
     clk_t * clk;

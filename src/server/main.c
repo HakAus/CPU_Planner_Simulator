@@ -9,110 +9,55 @@
 #include <unistd.h>
 
 #include "option.h"
+#include "process.h"
+#include "clock.h"
+#include "cpu_scheduler.h"
+#include "job_scheduler.h"
+#include "io_device.h"
 
-int main(int argc, char** argv) {
 
+int main(int argc, char** argv) { 
+    
+    option_t opt;
+    parse_option (argc, argv, &opt);
 
-    if (argc > 1)
-    {
-        // PASO 1, definir variables
-        int fd, fd2, longitud_cliente, puerto;
-        puerto = atoi(argv[1]);
+    // Prueba job scheduler
+    clk_t * clk = create_clock();
+    cpu_t * cpu = create_cpu (clk);
+    
+    job_scheduler_t * js = create_job_scheduler (clk);
+    io_device_t * io_device = create_io_device (clk);
+    cpu_scheduler_t * cs;
+    
 
-        // Se necesitan dos estructuras del tipo sockaddr
-        // La primera guarda la dirección del servidor
-        // La segunda guarda la dirección del cliente
+    if (opt.test_fifo) {
+        cs = create_cpu_scheduler ("fifo", clk);
+        printf ("test_fifo\n");
+    }
 
-        struct sockaddr_in server, client;
+    else if (opt.test_np_sjf) {
+        cs = create_cpu_scheduler ("np_sjf", clk);
+        printf ("test_np_sjf\n");
+    }
 
-        // Configurar la estructura server
-        server.sin_family = AF_INET; // Protocolo de internet
-        server.sin_port = htons(puerto); // Puerto
-        server.sin_addr.s_addr = INADDR_ANY; // Dirección IP (cualquiera puede conectarse)
-        bzero(&(server.sin_zero), 8); // Poner a cero el resto de la estructura
+    else if (opt.test_np_hpf) {
+        cs = create_cpu_scheduler ("np_hpf", clk);
+        printf ("test_np_hpf\n");
+    }
 
-        // PASO 2, crear el socket
-        if((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-        {
-            perror("Error con la aperture del socket. \n");
-            exit(-1);
-        }
-
-        // PASO 3, enlazar el socket con la estructura server
-        if(bind(fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == -1)
-        {
-            printf("Error en el enlace.\n");
-            exit(-1);
-        }
-
-        // PASO 4, modo escucha
-        if(listen(fd, 5) == -1)
-        {
-            printf("Error en el modo escucha.\n");
-            exit(-1);
-        }
-
-        // PASO 5, aceptar conexiones
-        int contador = 1;
-        while(1)
-        {
-            longitud_cliente = sizeof(struct sockaddr_in);
-            // Llamada al sistema accept
-            if((fd2 = accept(fd, (struct sockaddr *)&client, &longitud_cliente)) == -1)
-            {
-                printf("Error en la aceptacion de la conexion.\n");
-                exit(-1);
-            }
-
-            char message[100]; // = "Hola cliente: ";
-            sprintf(message, "Hola cliente: %d\n", contador);
-            // snprintf(message, 12, "Hola cliente %d", contador);
-            send(fd2, message, 26, 0);
-
-            close(fd2); // Cerrar el socket
-
-            contador += 1;
-        }
-
-        close(fd); 
-
-    }else{
-        printf("No se ingresó el puerto por parámetro.");
+    else if (opt.test_rr) {
+        cs = create_cpu_scheduler ("rr", clk);
+        printf ("test_rr\n");
+    }
+    else {
+        printf ("No test selected\n");
+        return 0;
     }
     
+    js_register_cpu_scheduler (js, cs);
 
-
-    
-    // option_t opt;
-    // parse_option (argc, argv, &opt);
-
-    // if (opt.help) {
-    //     printf ("");
-    //     printf ("Options:\n");
-    //     printf ("  -h, --help\n");
-    //     printf ("  -t, --test ...\n");
-    //     return 0;
-    // }
-
-
-
-    // if (opt.test_fifo) {
-    //     printf ("test_fifo\n");
-    // }
-
-    // if (opt.test_np_sjf) {
-    //     printf ("test_np_sjf\n");
-    // }
-
-    // if (opt.test_np_hpf) {
-    //     printf ("test_np_hpf\n");
-    // }
-
-    // if (opt.test_rr) {
-    //     printf ("test_rr\n");
-    // }
-
-
+    create_processes (js, 5);
+    print_processes (js);
 
 
     return 0;

@@ -156,7 +156,7 @@ int all_terminated (job_scheduler_t * this) {
     return result;
 }
 
-void get_processes (job_scheduler_t * this, process_t ** pl) {
+void get_processes (job_scheduler_t * this, process_t ** pl) { // duda 
     NODE * t = this->queue->front;
     while (t != NULL) {
         pl [t->p->pid] = t->p;

@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "priority.h"
+#include "hpf.h"
 
 #define NODE struct __priority_node
 #define QUEUE struct __priority_queue

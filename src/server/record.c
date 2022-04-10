@@ -37,7 +37,7 @@ void delete_record (record_t * this) {
     free (this);
 }
 
-void write (record_t * this, int pid) {
+void _write (record_t * this, int pid) {
     NODE * n = (NODE *) malloc (sizeof (NODE));
     n->pid = pid;
     n->prev = this->tail;
