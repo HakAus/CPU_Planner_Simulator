@@ -22,7 +22,7 @@ all: echocompiling $(TARGET)
 	@mkdir -p $(BUILD)
 	@mv *.o $(BUILD)
 	@echo 'done'
-	@echo './simulator --help' for help
+	@echo './main --help' for help
 
 echocompiling:
 	@echo 'compiling...'
