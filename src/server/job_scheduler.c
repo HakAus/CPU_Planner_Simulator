@@ -110,7 +110,7 @@ void create_processes (job_scheduler_t * this, int n) {
         delete_nodes (this->queue->front);
     }
     for (int i = 1; i <= n; i++) {
-        process_t * p = create_process (i);
+        process_t * p = create_process (i, 0,0,0,0);
         js_enqueue (this->queue, p);
     }
     this->queue->head = this->queue->front;
@@ -121,7 +121,7 @@ void reset_job_scheduling (job_scheduler_t * this) {
     NODE * t = this->queue->head;
     while (t != NULL) {
         t->p->cpu_remain_time = t->p->cpu_burst_time;
-        t->p->io_remain_time = t->p->io_burst_time;
+        // t->p->io_remain_time = t->p->io_burst_time;
         t->p->termination_time = 0;
         t = t->next;
     }
@@ -136,7 +136,7 @@ void print_processes (job_scheduler_t * this) {
 
     while (t != NULL) {
         process_t * p = t->p;
-        printf ("| %3u | %12u | %14u | %13u | %13u | %8u |\n", p->pid, p->arrival_time, p->cpu_burst_time, p->io_start_time, p->io_burst_time, p->priority);
+        // printf ("| %3u | %12u | %14u | %13u | %13u | %8u |\n", p->pid, p->arrival_time, p->cpu_burst_time, p->io_start_time, p->io_burst_time, p->priority);
         printf ("+-----+--------------+----------------+---------------+---------------+----------+\n");
         t = t->next;
     }
