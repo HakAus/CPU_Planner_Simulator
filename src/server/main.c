@@ -20,7 +20,6 @@ int main(int argc, char** argv) {
     option_t opt;
     parse_option (argc, argv, &opt);
 
-    // Prueba job scheduler
     clk_t * clk = create_clock();
     cpu_t * cpu = create_cpu (clk);
     
@@ -51,9 +50,12 @@ int main(int argc, char** argv) {
         return 0;
     }
     
+    // Simulation
     js_register_cpu_scheduler (js, cs);
-
-    setup_server(js, cs);
+    register_cpu(cs, cpu);
+    init_clock(clk);
+    struct server_info * si = setup_server(js, cs);
+    start_simulation(si);
 
     return 0;
 }

@@ -24,4 +24,5 @@ void delete_clock (clk_t * this) {
 
 void clocking (clk_t * this) {
     this->clk = this->clk + 1;
+    sleep(1);
 }

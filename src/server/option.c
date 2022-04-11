@@ -45,3 +45,4 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             return;
         }
     }
+}

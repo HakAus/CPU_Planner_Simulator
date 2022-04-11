@@ -1,14 +1,6 @@
 #include "server.h"
 
-#define ACTIVE 1
-#define INACTIVE 0
-
-int scheduling = INACTIVE;
-int stop = INACTIVE;
-
-void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler) {
-
-    int *thread_exit_status;
+ struct server_info * setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler) {
 
     // create the server socket
     struct server_info *s_info = malloc(sizeof(struct server_info));
@@ -31,45 +23,61 @@ void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_schedul
     // waiting for this socket at a certain point in time. 
     listen(s_info->server_socket, 5); 
 
-    scheduling = ACTIVE;
+    printf("Server is listening ...\n");
 
-    pthread_t server_thread, clock_thread;
-    s_info->clock = create_clock();
-    printf("Running server ...\n");
+    return s_info;
 
-    pthread_create(&clock_thread, NULL, run_clock, (void*) s_info->clock);
-    pthread_create(&server_thread, NULL, schedule_jobs, (void*) s_info);
+}
 
-    pthread_join(server_thread, (void**)&(thread_exit_status));
-    pthread_join(clock_thread, (void**)&(thread_exit_status));
+void start_simulation(struct server_info * s_info) {
+    pthread_t job_scheduler_thread, cpu_scheduler_thread, clock_thread;
+    int *thread_exit_status;
+
+    printf("Starting simulation ...\n");
+
+    // create threads
+    pthread_create(&job_scheduler_thread, NULL, js_thread_function, (void*) s_info);
+    pthread_create(&cpu_scheduler_thread, NULL, cs_thread_function, (void*) s_info);
+
+    // wait for threads to complete
+    pthread_join(cpu_scheduler_thread, (void**)&(thread_exit_status));
+    pthread_join(job_scheduler_thread, (void**)&(thread_exit_status));
 
     if (thread_exit_status != PTHREAD_CANCELED) {
         printf("Client halted normally");
     }
 }
 
-void * run_clock(void * clock) {
-    struct clk_t * clk = clock;
-    while (1) {
-        clocking(clk);
-        sleep(1);
-    }
+void stop_simulation(pthread_t js_thread, pthread_t cs_thread) {
+    pthread_cancel(js_thread);
+    pthread_cancel(cs_thread);
 }
 
-void * schedule_jobs(void * args) {
+void * cs_thread_function(void * args) {
+    struct server_info *info = args;
+    while (1) {
+        printf("cpu working ...\n");
+        info->cpu_scheduler->scheduling(info->cpu_scheduler); // dequeue
+        running (info->cpu_scheduler->cpu); // execution
+        clocking(info->cpu_scheduler->clk);
+        printf("%d seconds have passed ...", get_time(info->cpu_scheduler->clk));
+    }
+
+    return NULL;
+}
+
+void * js_thread_function(void * args) {
     struct server_info *info = args;
 
     // socket message buffers
     char from_client[256];
-    char server_response[256] = "OK";
+    char server_response[256];
 
     // listen for connections
     int client_socket = accept(info->server_socket, NULL, NULL);
-
-    // clock for calculating arrival time
     
     // Job scheduler main loop
-    while (scheduling) {
+    while (1) {
 
         // get and serialize process from client
         recv(client_socket, from_client, sizeof(from_client), 0);
@@ -80,28 +88,36 @@ void * schedule_jobs(void * args) {
                &cpu_remain_time, &termination_time, &priority);
 
         p->pid = info->pid_consecutive++;
-        p->arrival_time = get_time(info->clock);
+        p->arrival_time = 0;
         p->cpu_burst_time = cpu_burst_time;
         p->cpu_remain_time = cpu_remain_time;
         p->termination_time = termination_time;
         p->priority = priority;
 
         // print incoming message from client
-        printf("Mensaje del cliente: \n");
-        printf("PID: %d\n", p->pid);
-        printf("Arrival time: %d\n", p->arrival_time);
-        printf("CPU burst time: %d\n", p->cpu_burst_time);
-        printf("CPU remain time: %d\n", p->cpu_remain_time);
-        printf("Priority: %d\n", p->priority);
-        printf("Termination time: %d\n", p->termination_time);
+        // printf("Mensaje del cliente: \n");
+        // printf("PID: %d\n", p->pid);
+        // printf("Arrival time: %d\n", p->arrival_time);
+        // printf("CPU burst time: %d\n", p->cpu_burst_time);
+        // printf("CPU remain time: %d\n", p->cpu_remain_time);
+        // printf("Priority: %d\n", p->priority);
+        // printf("Termination time: %d\n", p->termination_time);
 
-        // add process to job scheduler
-        js_enqueue(info->job_scheduler->queue, p);
+        // add process to job scheduler queue (Ready queue)
+        // js_enqueue(info->job_scheduler->queue, p);
+
+        
+        // job_scheduling(info->job_scheduler);
+
+        // send process to cpu scheduler
+        new_process(info->cpu_scheduler, p);
 
         // send response to client
+        sprintf(server_response, "Data received. Created process with ID: %d\n", info->pid_consecutive);
+        // server_response = strcat("Data received. Created process with ID: ", itoa(info->pid_consecutive));
         send(client_socket, server_response, sizeof(server_response), 0);
 
-        print_processes(info->job_scheduler);
+        // print_processes(info->job_scheduler);
     }
     return NULL;
 }
