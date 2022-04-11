@@ -26,7 +26,6 @@ int main(int argc, char** argv) {
     
     job_scheduler_t * js = create_job_scheduler (clk);
     cpu_scheduler_t * cs;
-    
 
     if (opt.test_fifo) {
         cs = create_cpu_scheduler ("fifo", clk);

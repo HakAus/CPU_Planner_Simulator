@@ -15,8 +15,8 @@ void setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_schedul
 
     // create server info object
     s_info->server_socket = socket(AF_INET, SOCK_STREAM, 0);
-    s_info->job_scheduler;
-    s_info->cpu_scheduler;
+    s_info->job_scheduler = job_scheduler;
+    s_info->cpu_scheduler = cpu_scheduler;
 
     // define the server address
     struct sockaddr_in server_address;
@@ -95,12 +95,13 @@ void * schedule_jobs(void * args) {
         printf("Priority: %d\n", p->priority);
         printf("Termination time: %d\n", p->termination_time);
 
+        // add process to job scheduler
+        js_enqueue(info->job_scheduler->queue, p);
 
-        // put process in ready queue
-        // info->job_scheduler->queue(info->job_scheduler->queue, p);  // LINEA CON ERROR
-
+        // send response to client
         send(client_socket, server_response, sizeof(server_response), 0);
-        // send the message to the client
+
+        print_processes(info->job_scheduler);
     }
     return NULL;
 }

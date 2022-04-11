@@ -41,6 +41,7 @@ void js_register_cpu_scheduler (job_scheduler_t * job_scheduler, cpu_scheduler_t
 /* create n processes
  */
 void create_processes (job_scheduler_t * job_scheduler, int n);
+void put_process_in_queue (job_scheduler_t * job_scheduler, process_t * process);
 
 /* do scheduling for one clock cycle
  * give cpu a process which its arrival time = clock time
@@ -64,6 +65,5 @@ int all_terminated (job_scheduler_t * job_scheduler);
  * process_list SHOULD have n + 1 space for n processes
  */
 void get_processes (job_scheduler_t * job_scheduler, process_t ** process_list);
-
 
 #endif
