@@ -1,5 +1,7 @@
 #include "server.h"
 
+#define MAX_CLIENTS 5
+
  struct server_info * setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler) {
 
     // create the server socket
@@ -26,21 +28,26 @@
     printf("Server is listening ...\n");
 
     return s_info;
+
 }
 
 void start_simulation(struct server_info * s_info) {
-    pthread_t job_scheduler_thread, cpu_scheduler_thread, clock_thread;
+    pthread_t job_scheduler_thread, cpu_scheduler_thread, clock_thread, accept_client_thread;
     int *thread_exit_status;
 
     printf("Starting simulation ...\n");
 
     // create threads
-    pthread_create(&job_scheduler_thread, NULL, js_thread_function, (void*) s_info);
     pthread_create(&cpu_scheduler_thread, NULL, cs_thread_function, (void*) s_info);
+    pthread_create(&accept_client_thread, NULL, accept_client_thread_function, (void*) s_info);
 
     // wait for threads to complete
     pthread_join(cpu_scheduler_thread, (void**)&(thread_exit_status));
     pthread_join(job_scheduler_thread, (void**)&(thread_exit_status));
+    pthread_join(accept_client_thread_function, (void**)&(thread_exit_status));
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        pthread_join(s_info->job_scheduler_threads[i], (void**)&(thread_exit_status));
+    }
 
     if (thread_exit_status != PTHREAD_CANCELED) {
         printf("Client halted normally");
@@ -59,10 +66,26 @@ void * cs_thread_function(void * args) {
         info->cpu_scheduler->scheduling(info->cpu_scheduler); // dequeue
         running (info->cpu_scheduler->cpu); // execution
         clocking(info->cpu_scheduler->clk);
-        printf("%d seconds have passed ...\n", get_time(info->cpu_scheduler->clk));
-
-        info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
+        printf("%d seconds have passed ...", get_time(info->cpu_scheduler->clk));
     }
+
+    return NULL;
+}
+
+void * accept_client_thread_function(void * args) {
+    struct server_info *info = args;
+    int count = 0;
+
+    while(count < MAX_CLIENTS) {
+        // accept a client connection
+        info->client_socket = accept(info->server_socket, NULL, NULL);
+
+        // create a thread for the client
+        pthread_create(&info->job_scheduler_threads[count], NULL, js_thread_function, (void*) info);
+        count++;
+    }
+
+    printf("All clients have connected ...\n");
 
     return NULL;
 }
@@ -74,21 +97,18 @@ void * js_thread_function(void * args) {
     char from_client[256];
     char server_response[256];
 
-    // listen for connections
-    int client_socket = accept(info->server_socket, NULL, NULL);
-    
     // Job scheduler main loop
     while (1) {
 
         // get and serialize process from client
-        recv(client_socket, from_client, sizeof(from_client), 0);
+        recv(info->client_socket, from_client, sizeof(from_client), 0);
         int pid, arrival_time, cpu_burst_time, cpu_remain_time, termination_time, priority; 
         process_t * p = (process_t *) malloc (sizeof (process_t));
         sscanf(from_client, "%d,%d,%d,%d,%d,%d",
                &pid, &arrival_time, &cpu_burst_time, 
                &cpu_remain_time, &termination_time, &priority);
 
-        p->pid = ++info->pid_consecutive;
+        p->pid = info->pid_consecutive++;
         p->arrival_time = 0;
         p->cpu_burst_time = cpu_burst_time;
         p->cpu_remain_time = cpu_remain_time;
@@ -116,8 +136,9 @@ void * js_thread_function(void * args) {
         // send response to client
         sprintf(server_response, "Data received. Created process with ID: %d\n", info->pid_consecutive);
         // server_response = strcat("Data received. Created process with ID: ", itoa(info->pid_consecutive));
-        send(client_socket, server_response, sizeof(server_response), 0);
+        send(info->client_socket, server_response, sizeof(server_response), 0);
 
+        // print_processes(info->job_scheduler);
     }
     return NULL;
 }

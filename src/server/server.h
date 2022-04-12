@@ -17,8 +17,10 @@
 
 struct server_info {
     int server_socket;
+    int client_socket;
     job_scheduler_t * job_scheduler;
     cpu_scheduler_t * cpu_scheduler;
+    pthread_t job_scheduler_threads [5];
     int pid_consecutive;
     // clk_t * clock;
 };
@@ -26,5 +28,6 @@ struct server_info {
 struct server_info * setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler);
 void * js_thread_function(void * args);
 void * cs_thread_function(void * args);
+void * accept_client_thread_function(void * args);
 
 #endif
