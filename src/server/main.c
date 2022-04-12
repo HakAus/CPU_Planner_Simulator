@@ -32,12 +32,12 @@ int main(int argc, char** argv) {
     }
 
     else if (opt.test_np_sjf) {
-        cs = create_cpu_scheduler ("np_sjf", clk);
+        cs = create_cpu_scheduler ("sjf", clk);
         printf ("test_np_sjf\n");
     }
 
     else if (opt.test_np_hpf) {
-        cs = create_cpu_scheduler ("np_hpf", clk);
+        cs = create_cpu_scheduler ("hpf", clk);
         printf ("test_np_hpf\n");
     }
 

@@ -49,6 +49,7 @@ void start_simulation(struct server_info * s_info) {
         pthread_join(s_info->job_scheduler_threads[i], (void**)&(thread_exit_status));
     }
 
+    // check that threads finished correctly
     if (thread_exit_status != PTHREAD_CANCELED) {
         printf("Client halted normally");
     }
@@ -62,12 +63,9 @@ void stop_simulation(pthread_t js_thread, pthread_t cs_thread) {
 void * cs_thread_function(void * args) {
     struct server_info *info = args;
     while (1) {
-        printf("cpu working ...\n");
         info->cpu_scheduler->scheduling(info->cpu_scheduler); // dequeue
         running (info->cpu_scheduler->cpu); // execution
-        clocking(info->cpu_scheduler->clk);
-        printf("%d seconds have passed ...", get_time(info->cpu_scheduler->clk));
-        info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
+        clocking(info->cpu_scheduler->clk); // update time
     }
 
     return NULL;
@@ -102,13 +100,16 @@ void * js_thread_function(void * args) {
 
         // get and serialize process from client
         for (int i = 0; i < info->client_count+1; i++) {
+
+            // receive message from client
             recv(info->client_sockets[i], from_client, sizeof(from_client), 0);
+
+            // deserialize message
             int pid, arrival_time, cpu_burst_time, cpu_remain_time, termination_time, priority; 
             process_t * p = (process_t *) malloc (sizeof (process_t));
             sscanf(from_client, "%d,%d,%d,%d,%d,%d",
                 &pid, &arrival_time, &cpu_burst_time, 
                 &cpu_remain_time, &termination_time, &priority);
-
             p->pid = info->pid_consecutive++;
             p->arrival_time = 0;
             p->cpu_burst_time = cpu_burst_time;
@@ -121,7 +122,6 @@ void * js_thread_function(void * args) {
 
             // send response to client
             sprintf(server_response, "Data received. Created process with ID: %d\n", info->pid_consecutive);
-
             send(info->client_sockets[i], server_response, sizeof(server_response), 0);
         }
         

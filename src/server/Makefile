@@ -9,13 +9,13 @@ CFLAGS = -g -w
 TARGET = main
 
 SRC = server
-ALGOSRC = $(SRC)/algorithm
+ALGOSRC = algorithm
 BUILD = _build
 
-MAIN = $(SRC)/main.c 
+MAIN = main.c 
 CLEAN = *.o $(TARGET) $(BUILD)
 
-ALGOS = fifo.o sjf.o np_sjf.o rr.o 
+ALGOS = fifo.o sjf.o np_sjf.o rr.o hpf.o
 OBJS = record.o process.o evaluate.o clock.o cpu.o cpu_scheduler.o job_scheduler.o option.o server.o
 
 all: echocompiling $(TARGET)
@@ -32,7 +32,7 @@ debug: $(TARGET)
 $(TARGET): $(OBJS) $(ALGOS)
 	@$(CC) $(MAIN) -o $@ $^ $(CFLAGS) -lpthread
 
-$(OBJS): %.o: $(SRC)/%.c 
+$(OBJS): %.o: %.c 
 	@$(CC) -c $< -o $@ $(CFLAGS)
 
 $(ALGOS): %.o: $(ALGOSRC)/%.c

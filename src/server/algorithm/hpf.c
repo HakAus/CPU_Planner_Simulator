@@ -1,5 +1,5 @@
 #include <stdlib.h>
-
+#include "../cpu.h"
 #include "hpf.h"
 
 #define NODE struct __priority_node
@@ -9,6 +9,17 @@ QUEUE * create_priority_queue () {
     QUEUE * queue = (QUEUE *) malloc (sizeof (QUEUE));
     queue->head = NULL;
     return queue;
+}
+
+void np_hpf_scheduling (cpu_scheduler_t * this) {
+    if (is_running (this->cpu)) {
+        return;
+    }
+    if (priority_is_empty ((QUEUE *) this->queue)) {
+        return;
+    }
+    process_t * orig;
+    execute (this->cpu, priority_dequeue ((QUEUE *) this->queue), &orig);
 }
 
 void priority_enqueue (QUEUE * queue, process_t * process) {

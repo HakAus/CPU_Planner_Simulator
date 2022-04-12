@@ -23,21 +23,24 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             printf ("   -h, --help      show the list of options\n");
             printf ("\n");
             printf ("scheduler options are:\n");
-            printf ("   --fifo          simulate Fisrt Come First Served\n");
-            printf ("   --np-sjf        simulate Non-Preemptive Shortest Job First\n");
-            printf ("   --np-hpf   simulate Non-Preemptive hpf\n");
-            printf ("   --rr            simulate Round Robin\n");
+            printf ("   --fifo      simulate Fisrt Come First Served\n");
+            printf ("   --sjf       simulate Non-Preemptive Shortest Job First\n");
+            printf ("   --hpf       simulate Non-Preemptive hpf\n");
+            printf ("   --rr        simulate Round Robin\n");
             printf ("\n");
             opt->help = TRUE;
             return;
         } else if (strcmp ("--fifo", argv [i]) == 0) {
             opt->test_fifo = TRUE;
-        } else if (strcmp ("--np_sjf", argv [i]) == 0) {
+        } else if (strcmp ("--sjf", argv [i]) == 0) {
             opt->test_np_sjf = TRUE;
-        } else if (strcmp ("--np_hpf", argv [i]) == 0) {
+            printf("sjf\n");
+        } else if (strcmp ("--hpf", argv [i]) == 0) {
             opt->test_np_hpf = TRUE;
+            printf("hpf\n");
         } else if (strcmp ("--rr", argv [i]) == 0) {
             opt->test_rr = TRUE;
+            printf("rr\n");
         } else {
             opt->help = TRUE;
             printf ("Please check arguments\n");
