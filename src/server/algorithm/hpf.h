@@ -20,7 +20,7 @@ struct __priority_queue * create_priority_queue ();
 
 /* function for cpu scheduling
  */
-void np_hpf_scheduling (cpu_scheduler_t * cpu_scheduler);
+void hpf_scheduling (cpu_scheduler_t * cpu_scheduler);
 
 /* priority dequeue
  * return a process which has the minimum priority value

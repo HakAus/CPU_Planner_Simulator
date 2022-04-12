@@ -11,7 +11,7 @@ QUEUE * create_priority_queue () {
     return queue;
 }
 
-void np_hpf_scheduling (cpu_scheduler_t * this) {
+void hpf_scheduling (cpu_scheduler_t * this) {
     if (is_running (this->cpu)) {
         return;
     }

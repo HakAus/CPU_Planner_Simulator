@@ -1,17 +1,28 @@
 #include <stdlib.h>
-
+#include "../cpu.h"
 #include "sjf.h"
 
 #define NODE struct __sjf_node
 #define QUEUE struct __sjf_queue
 
-QUEUE * create_sjf_queue () {
+struct __sjf_queue * create_sjf_queue () {
     QUEUE * queue = (QUEUE *) malloc (sizeof (QUEUE));
     queue->head = NULL;
     return queue;
 }
 
-void sjf_enqueue (QUEUE * queue, process_t * process) {
+void sjf_scheduling (cpu_scheduler_t * this) {
+    if (is_running (this->cpu)) {
+        return;
+    }
+    if (sjf_is_empty ((QUEUE *) this->queue)) {
+        return;
+    }
+    process_t * orig;
+    execute (this->cpu, sjf_dequeue ((QUEUE *) this->queue), &orig);
+}
+
+void sjf_enqueue (struct __sjf_queue * queue, process_t * process) {
     NODE * node = (NODE *) malloc (sizeof (NODE));
     node->p = process;
     node->next = NULL;
@@ -42,3 +53,4 @@ process_t * sjf_dequeue (QUEUE * queue) {
 int sjf_is_empty (QUEUE * queue) {
     return queue->head == NULL;
 }
+
