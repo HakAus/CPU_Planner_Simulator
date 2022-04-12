@@ -31,22 +31,24 @@
 
 }
 
-void start_simulation(struct server_info * s_info) {
-    pthread_t job_scheduler_thread, cpu_scheduler_thread, clock_thread, accept_client_thread;
+void start_simulation(struct server_info * info) {
+    
     int *thread_exit_status;
 
     printf("Starting simulation ...\n");
 
     // create threads
-    pthread_create(&cpu_scheduler_thread, NULL, cs_thread_function, (void*) s_info);
-    s_info->client_count = 0;
-    pthread_create(&accept_client_thread, NULL, accept_client_thread_function, (void*) s_info);
+    pthread_create(&info->cpu_scheduler_thread, NULL, cs_thread_function, (void*) info);
+    info->client_count = 0;
+    pthread_create(&info->accept_client_thread, NULL, accept_client_thread_function, (void*) info);
+    pthread_create(&info->input_thread, NULL, read_user_input, (void*) info);
 
     // wait for threads to complete
-    pthread_join(cpu_scheduler_thread, (void**)&(thread_exit_status));
+    pthread_join(info->cpu_scheduler_thread, (void**)&(thread_exit_status));
     pthread_join(accept_client_thread_function, (void**)&(thread_exit_status));
+    pthread_join(info->input_thread, (void**)&(thread_exit_status));
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        pthread_join(s_info->job_scheduler_threads[i], (void**)&(thread_exit_status));
+        pthread_join(info->job_scheduler_threads[i], (void**)&(thread_exit_status));
     }
 
     // check that threads finished correctly
@@ -55,9 +57,11 @@ void start_simulation(struct server_info * s_info) {
     }
 }
 
-void stop_simulation(pthread_t js_thread, pthread_t cs_thread) {
-    pthread_cancel(js_thread);
-    pthread_cancel(cs_thread);
+void stop_simulation(struct server_info * info) {
+    pthread_cancel(info->cpu_scheduler_thread);
+    for (int i = 0; i < info->client_count; i++) {
+        pthread_cancel(info->job_scheduler_threads[i]);
+    }
 }
 
 void * cs_thread_function(void * args) {
@@ -66,7 +70,6 @@ void * cs_thread_function(void * args) {
         info->cpu_scheduler->scheduling(info->cpu_scheduler); // dequeue
         running (info->cpu_scheduler->cpu); // execution
         clocking(info->cpu_scheduler->clk); // update time
-        info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
     }
 
     return NULL;
@@ -85,6 +88,23 @@ void * accept_client_thread_function(void * args) {
     }
 
     printf("All clients have connected ...\n");
+
+    return NULL;
+}
+
+void * read_user_input(void * args)
+{
+    struct server_info *info = args;
+    while (1) {
+        char input[100];
+        scanf("%s", input);
+        if (strcmp(input, "print") == 0) {
+            info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
+        } else if (strcmp(input, "quit") == 0) {
+            stop_simulation(info);
+            printf("Se ha terminado la simulación\n");
+        }
+    }
 
     return NULL;
 }

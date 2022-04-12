@@ -21,14 +21,14 @@ struct server_info {
     job_scheduler_t * job_scheduler;
     cpu_scheduler_t * cpu_scheduler;
     pthread_t job_scheduler_threads [5];
-    int client_count;
-    int pid_consecutive;
-    // clk_t * clock;
+    pthread_t cpu_scheduler_thread, accept_client_thread, input_thread;
+    int client_count, pid_consecutive;
 };
 
 struct server_info * setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler);
 void * js_thread_function(void * args);
 void * cs_thread_function(void * args);
 void * accept_client_thread_function(void * args);
+void * read_user_input(void * args);
 
 #endif
