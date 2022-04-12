@@ -66,6 +66,7 @@ void * cs_thread_function(void * args) {
         info->cpu_scheduler->scheduling(info->cpu_scheduler); // dequeue
         running (info->cpu_scheduler->cpu); // execution
         clocking(info->cpu_scheduler->clk); // update time
+        info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
     }
 
     return NULL;

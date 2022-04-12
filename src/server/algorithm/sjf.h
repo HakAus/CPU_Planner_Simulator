@@ -35,4 +35,9 @@ process_t * sjf_dequeue (struct __sjf_queue * queue);
 /* return TRUE if queue is empty
  */
 int sjf_is_empty (struct __sjf_queue * queue);
+
+/* Print sjf queue
+*/
+void print_sjf_queue (cpu_scheduler_t * cpu_scheduler);
+
 #endif

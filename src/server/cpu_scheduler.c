@@ -5,7 +5,7 @@
 #include "cpu_scheduler.h"
 
 #include "algorithm/fifo.h"
-#include "algorithm/np_sjf.h"
+#include "algorithm/sjf.h"
 #include "algorithm/hpf.h"
 #include "algorithm/rr.h"
 
@@ -23,17 +23,15 @@ cpu_scheduler_t * create_cpu_scheduler (char * algo, clk_t * clock, ...) {
         cs->scheduling = fifo_scheduling;
         cs->print_ready_queue = print_fifo_queue;
     } else if (strcmp ("sjf", algo) == 0) {
-        printf("0");
         cs->queue = create_sjf_queue ();
-        printf("1");
         cs->enqueue = sjf_enqueue;
-        printf("2");
         cs->scheduling = sjf_scheduling;    
-        printf("3");
+        cs->print_ready_queue = print_sjf_queue;
     } else if (strcmp ("hpf", algo) == 0) {
         cs->queue = create_priority_queue ();
         cs->enqueue = priority_enqueue;
         cs->scheduling = hpf_scheduling;
+        cs->print_ready_queue = print_hpf_queue;
     } else if (strcmp ("rr", algo) == 0) {
         va_list vl;
         va_start (vl, 1);
@@ -41,6 +39,7 @@ cpu_scheduler_t * create_cpu_scheduler (char * algo, clk_t * clock, ...) {
         va_end (vl);
         cs->enqueue = rr_enqueue;
         cs->scheduling = rr_scheduling;
+        cs->print_ready_queue = print_rr_queue;
     } else {
         free (cs);
         return NULL;

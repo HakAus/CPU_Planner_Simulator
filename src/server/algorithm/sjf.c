@@ -54,3 +54,18 @@ int sjf_is_empty (QUEUE * queue) {
     return queue->head == NULL;
 }
 
+void print_sjf_queue (cpu_scheduler_t * this) {
+    QUEUE * q = this->queue;
+    NODE * t = q->head;
+    printf ("+-----+--------------+----------------+---------------+\n");
+    printf ("| pid | arrival_time | cpu_burst_time | priority |\n");
+    printf ("+-----+--------------+----------------+---------------+\n");
+
+    while (t != NULL) {
+        process_t * p = t->p;
+        printf ("| %3u | %12u | %14u |  %8u |\n", p->pid, p->arrival_time, p->cpu_burst_time, p->priority);
+        printf ("+-----+--------------+----------------+---------------+\n");
+        t = t->next;
+    }
+    printf ("\n");
+}

@@ -34,4 +34,9 @@ void priority_enqueue (struct __priority_queue * queue, process_t * process);
 /* return TRUE if queue is empty
  */
 int priority_is_empty (struct __priority_queue * queue);
+
+/* Print hpf queue
+*/
+void print_hpf_queue (cpu_scheduler_t * cpu_scheduler);
+
 #endif

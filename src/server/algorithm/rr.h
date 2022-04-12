@@ -16,4 +16,8 @@ void rr_scheduling (cpu_scheduler_t * cpu_scheduler);
  */
 void rr_enqueue (void * queue, process_t * process);
 
+/* Print rr queue
+*/
+void print_rr_queue (cpu_scheduler_t * cpu_scheduler);
+
 #endif
