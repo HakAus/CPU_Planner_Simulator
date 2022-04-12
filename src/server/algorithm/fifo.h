@@ -16,4 +16,8 @@ void fifo_scheduling (cpu_scheduler_t * cpu_scheduler);
  */
 void fifo_enqueue (void * queue, process_t * process);
 
+/* Print fifo queue
+*/
+void print_fifo_queue (cpu_scheduler_t * cpu_scheduler);
+
 #endif

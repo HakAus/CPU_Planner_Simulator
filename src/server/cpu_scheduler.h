@@ -12,6 +12,7 @@ struct __cpu_scheduler {
     cpu_t * cpu;
     void (* enqueue) (void * queue, process_t * process);
     void (* scheduling) (struct __cpu_scheduler * cpu_scheduler);
+    void (* print_ready_queue) (struct __cpu_scheduler * cpu_scheduler);
 };
 
 // due to cyclic inclustion
@@ -43,5 +44,9 @@ void register_cpu (cpu_scheduler_t * cpu_scheduler, cpu_t * cpu);
 /* add new process to queue
  */
 void new_process (cpu_scheduler_t * cpu_scheduler, process_t * process);
+
+/* print processes informations to schedule
+ */
+void print_ready_queue (cpu_scheduler_t * cpu_scheduler);
 
 #endif

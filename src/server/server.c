@@ -26,7 +26,6 @@
     printf("Server is listening ...\n");
 
     return s_info;
-
 }
 
 void start_simulation(struct server_info * s_info) {
@@ -60,7 +59,9 @@ void * cs_thread_function(void * args) {
         info->cpu_scheduler->scheduling(info->cpu_scheduler); // dequeue
         running (info->cpu_scheduler->cpu); // execution
         clocking(info->cpu_scheduler->clk);
-        printf("%d seconds have passed ...", get_time(info->cpu_scheduler->clk));
+        printf("%d seconds have passed ...\n", get_time(info->cpu_scheduler->clk));
+
+        info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
     }
 
     return NULL;
@@ -87,7 +88,7 @@ void * js_thread_function(void * args) {
                &pid, &arrival_time, &cpu_burst_time, 
                &cpu_remain_time, &termination_time, &priority);
 
-        p->pid = info->pid_consecutive++;
+        p->pid = ++info->pid_consecutive;
         p->arrival_time = 0;
         p->cpu_burst_time = cpu_burst_time;
         p->cpu_remain_time = cpu_remain_time;
@@ -117,7 +118,6 @@ void * js_thread_function(void * args) {
         // server_response = strcat("Data received. Created process with ID: ", itoa(info->pid_consecutive));
         send(client_socket, server_response, sizeof(server_response), 0);
 
-        // print_processes(info->job_scheduler);
     }
     return NULL;
 }

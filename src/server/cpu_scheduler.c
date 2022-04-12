@@ -21,6 +21,7 @@ cpu_scheduler_t * create_cpu_scheduler (char * algo, clk_t * clock, ...) {
         cs->queue = create_fifo_queue ();
         cs->enqueue = fifo_enqueue;
         cs->scheduling = fifo_scheduling;
+        cs->print_ready_queue = print_fifo_queue;
     } else if (strcmp ("np_sjf", algo) == 0) {
         cs->queue = create_np_sjf_queue ();
         cs->enqueue = np_sjf_enqueue;
@@ -55,4 +56,8 @@ void register_cpu (cpu_scheduler_t * this, cpu_t * cpu) {
 
 void new_process (cpu_scheduler_t * this, process_t * proc) {
     this->enqueue (this->queue, proc);
+}
+
+void print_ready_queue(cpu_scheduler_t * this) {
+    this->print_ready_queue(this);
 }
