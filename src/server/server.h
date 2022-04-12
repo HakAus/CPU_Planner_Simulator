@@ -17,10 +17,11 @@
 
 struct server_info {
     int server_socket;
-    int client_socket;
+    int client_sockets[5];
     job_scheduler_t * job_scheduler;
     cpu_scheduler_t * cpu_scheduler;
     pthread_t job_scheduler_threads [5];
+    int client_count;
     int pid_consecutive;
     // clk_t * clock;
 };
