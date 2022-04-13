@@ -13,23 +13,6 @@
  */
 #define MAX_PRIORITY 5
 
-process_t * create_process (int pid, int min_burst, int max_burst,
-                            int min_creation, int max_creation) {
-                                                                
-    process_t * p = (process_t *) malloc (sizeof (process_t));
-
-    p->pid = pid;
-
-    p->arrival_time = rand() % MAX_ARRIVAL_TIME;
-    p->cpu_burst_time = rand() % (max_burst - min_burst) + min_burst;
-    p->cpu_remain_time = p->cpu_burst_time;
-    p->termination_time = 0;
-
-    p->priority = rand() % (MAX_PRIORITY);
-
-    return p;
-}
-
 int run (process_t * this) {
     this->cpu_remain_time = this->cpu_remain_time - 1;
     return this->cpu_remain_time == 0;
