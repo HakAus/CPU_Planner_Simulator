@@ -16,7 +16,7 @@ MAIN = main.c
 CLEAN = *.o $(TARGET) $(BUILD)
 
 ALGOS = fifo.o sjf.o rr.o hpf.o
-OBJS = record.o process.o evaluate.o clock.o cpu.o cpu_scheduler.o job_scheduler.o option.o server.o
+OBJS = list.o record.o process.o evaluate.o clock.o cpu.o cpu_scheduler.o job_scheduler.o option.o server.o
 
 all: echocompiling $(TARGET)
 	@mkdir -p $(BUILD)

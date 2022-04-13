@@ -2,9 +2,11 @@
 
 #include "cpu.h"
 
-cpu_t * create_cpu (clk_t * clk) {
+cpu_t * create_cpu (clk_t * clk, List * process_list) {
     cpu_t * cpu = (cpu_t *) malloc (sizeof (cpu_t));
+
     cpu->clk = clk;
+    cpu->process_list = process_list;
     cpu->record = create_record ("CPU execution log", 18);
     
     return cpu;
@@ -21,7 +23,10 @@ void running (cpu_t * this) {
     }
     if (run (this->process)) {
         this->process->termination_time = get_time (this->clk);
+        insert(this->process_list, this->process);
+        printf("Process: %d finished execution. \n", this->process->pid);
         this->process = NULL;
+        
         return;
     }
 }

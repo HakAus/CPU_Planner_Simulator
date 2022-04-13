@@ -1,4 +1,5 @@
 #include "server.h"
+#include "evaluate.h"
 
 #define MAX_CLIENTS 5
 
@@ -102,12 +103,46 @@ void * read_user_input(void * args)
             info->cpu_scheduler->print_ready_queue(info->cpu_scheduler);
         } else if (strcmp(input, "quit") == 0) {
             stop_simulation(info);
+
             printf("Se ha terminado la simulación\n");
+
+            // statics(info->cpu_scheduler->cpu);
+
+          
+            cpu_t * cpu = info->cpu_scheduler->cpu;
+            
+            List * process_list = cpu->process_list;
+           
+            int count_list = process_list->count;
+           
+            int * turn_around_time_list = (int *) malloc (sizeof (int) * (count_list + 1));
+        
+            int * waiting_time_list = (int *) malloc (sizeof (int) * (count_list + 1));
+           
+            double average_turn_around_time;
+           
+            double average_waiting_time;
+            
+
+            average_turn_around_time = evaluate_turn_around_time(count_list ,process_list, turn_around_time_list);
+            average_waiting_time = evaluate_waiting_time(count_list, process_list, waiting_time_list);
+
+            print_list("Waiting time", count_list, waiting_time_list);
+            print_list("Turn around time", count_list, turn_around_time_list);
+            printf("The average turn around time is: %f\n", average_turn_around_time);
+            printf("The average waiting time: %f\n", average_waiting_time);
+            printf("The total processes exucuted: %d\n", count_list);
+
+            
         }
     }
 
     return NULL;
 }
+
+// void * statics(cpu_t * cpu){
+
+// } 
 
 void * js_thread_function(void * args) {
     struct server_info *info = args;
@@ -133,7 +168,7 @@ void * js_thread_function(void * args) {
                 &cpu_remain_time, &termination_time, &priority);
             ++info->pid_consecutive;
             p->pid = info->pid_consecutive;
-            p->arrival_time = 0;
+            p->arrival_time = get_time(info->cpu_scheduler->clk);
             p->cpu_burst_time = cpu_burst_time;
             p->cpu_remain_time = cpu_remain_time;
             p->termination_time = termination_time;

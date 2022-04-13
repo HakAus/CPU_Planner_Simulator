@@ -14,14 +14,17 @@
 #include "server.h"
 #include "cpu_scheduler.h"
 #include "job_scheduler.h"
+#include "list.h"
 
 int main(int argc, char** argv) { 
     
+    List process_list;
     option_t opt;
     parse_option (argc, argv, &opt);
 
+    initlist(&process_list);
     clk_t * clk = create_clock();
-    cpu_t * cpu = create_cpu (clk);
+    cpu_t * cpu = create_cpu (clk, &process_list);
     
     job_scheduler_t * js = create_job_scheduler (clk);
     cpu_scheduler_t * cs;

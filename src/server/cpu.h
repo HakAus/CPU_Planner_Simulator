@@ -4,17 +4,22 @@
 #include "clock.h"
 #include "process.h"
 #include "record.h"
+#include "list.h"
+
 struct __cpu {
     clk_t * clk;
     record_t * record;
     process_t * process;
+
+    // stastics
+    List * process_list;
 };
 
 typedef struct __cpu cpu_t;
 
 /* create cpu
  */
-cpu_t * create_cpu (clk_t * clock);
+cpu_t * create_cpu (clk_t * clock, List * process_list);
 
 /* delete cpu
  */

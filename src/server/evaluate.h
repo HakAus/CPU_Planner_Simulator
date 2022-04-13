@@ -2,6 +2,7 @@
 #define __EVALUATE_H
 
 #include "process.h"
+#include "list.h"
 
 /* evaluate turn around time for n processes
  * by calculate termination time - arrival time
@@ -9,7 +10,7 @@
  * process' turn around time will be stored in return_list
  * return_list SHOULD have n + 1 space for n processes
  */
-double evaluate_turn_around_time (int n, process_t ** process_list, int * return_list);
+double evaluate_turn_around_time (int n, List * list, int * return_list);
 
 /* evaluate waiting time for n processes
  * by calculate termination time - arrival time - cpu & io burst time
@@ -17,7 +18,7 @@ double evaluate_turn_around_time (int n, process_t ** process_list, int * return
  * process' waiting time whill be stored in return_list
  * return_list SHOULD have n + 1 space for n processes
  */
-double evaluate_waiting_time (int n, process_t ** process_list, int * return_list);
+double evaluate_waiting_time (int n, List * list, int * return_list);
 
 /* print with form
  */

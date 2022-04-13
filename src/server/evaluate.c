@@ -2,24 +2,27 @@
 
 #include "evaluate.h"
 
-double evaluate_turn_around_time (int n, process_t ** pl, int * rl) {
+double evaluate_turn_around_time (int n, List * list, int * rl) {
     int sum = 0;
     int tt = 0;
+   
     for (int i = 1; i <= n; i++) {
-        tt = pl[i]->termination_time - pl[i]->arrival_time + 1;
+        process_t * p = getItem(list, i);
+        tt = p->termination_time - p->arrival_time + 1;
         sum = sum + tt;
-        rl[pl[i]->pid] = tt;
+        rl[p->pid] = tt;
     }
     return (double) sum / n;
 }
 
-double evaluate_waiting_time (int n, process_t ** pl, int * rl) {
+double evaluate_waiting_time (int n, List * list, int * rl) {
     int sum = 0;
     int wt = 0;
     for (int i = 1; i <= n; i++) {
-        wt = pl[i]->termination_time - pl[i]->arrival_time - pl[i]->cpu_burst_time; // - pl[i]->io_burst_time + 1;
+        process_t * p = getItem(list, i);
+        wt = p->termination_time - p->arrival_time - p->cpu_burst_time + 1;
         sum = sum + wt;
-        rl[pl[i]->pid] = wt;
+        rl[p->pid] = wt;
     }
     return (double) sum / n;
 }
