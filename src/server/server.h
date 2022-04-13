@@ -25,6 +25,8 @@ struct server_info {
     int client_count, pid_consecutive;
 };
 
+
+
 struct server_info * setup_server(job_scheduler_t * job_scheduler, cpu_scheduler_t * cpu_scheduler);
 void * js_thread_function(void * args);
 void * cs_thread_function(void * args);

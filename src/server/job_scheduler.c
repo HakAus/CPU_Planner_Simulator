@@ -105,23 +105,22 @@ void js_register_cpu_scheduler (job_scheduler_t * this, cpu_scheduler_t * cs) {
     this->cs = cs;
 }
 
-void create_processes (job_scheduler_t * this, int n) {
-    if (this->queue->front != NULL) {
-        delete_nodes (this->queue->front);
-    }
-    for (int i = 1; i <= n; i++) {
-        process_t * p = create_process (i, 0,0,0,0);
-        js_enqueue (this->queue, p);
-    }
-    this->queue->head = this->queue->front;
-}
+// void create_processes (job_scheduler_t * this, int n) {
+//     if (this->queue->front != NULL) {
+//         delete_nodes (this->queue->front);
+//     }
+//     for (int i = 1; i <= n; i++) {
+//         process_t * p = create_process (i, 0,0,0,0);
+//         js_enqueue (this->queue, p);
+//     }
+//     this->queue->head = this->queue->front;
+// }
 
 void reset_job_scheduling (job_scheduler_t * this) {
     this->queue->head = this->queue->front;
     NODE * t = this->queue->head;
     while (t != NULL) {
         t->p->cpu_remain_time = t->p->cpu_burst_time;
-        // t->p->io_remain_time = t->p->io_burst_time;
         t->p->termination_time = 0;
         t = t->next;
     }

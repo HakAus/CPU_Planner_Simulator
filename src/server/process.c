@@ -15,9 +15,7 @@
 
 process_t * create_process (int pid, int min_burst, int max_burst,
                             int min_creation, int max_creation) {
-    // if (pid == 0) {
-    //     return NULL;
-    // }
+                                                                
     process_t * p = (process_t *) malloc (sizeof (process_t));
 
     p->pid = pid;
