@@ -76,9 +76,6 @@ void start_simulation(struct server_info * info) {
     printf("The average turn around time is: %f\n", average_turn_around_time);
     printf("The average waiting time: %f\n", average_waiting_time);
     printf("The total processes exucuted: %d\n", count_list);
-    
-    
-
 
     // check that threads finished correctly
     if (thread_exit_status != PTHREAD_CANCELED) {
@@ -140,10 +137,6 @@ void * read_user_input(void * args)
 
     return NULL;
 }
-
-// void * statics(cpu_t * cpu){
-
-// } 
 
 void * js_thread_function(void * args) {
     struct server_info *info = args;
