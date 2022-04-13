@@ -3,12 +3,10 @@
 
 #include "clock.h"
 #include "process.h"
-#include "record.h"
 #include "list.h"
 
 struct __cpu {
     clk_t * clk;
-    record_t * record;
     process_t * process;
 
     // stastics

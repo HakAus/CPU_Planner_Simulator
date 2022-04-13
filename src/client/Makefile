@@ -1,18 +1,15 @@
 # Variables:
-
 CC = gcc
 CFLAGS = -g -w
 TARGET = main
 
-SRC = server
-ALGOSRC = algorithm
+SRC = client
 BUILD = _build
 
 MAIN = main.c 
 CLEAN = *.o $(TARGET) $(BUILD)
 
-ALGOS = fifo.o sjf.o rr.o hpf.o
-OBJS = list.o process.o evaluate.o clock.o cpu.o cpu_scheduler.o job_scheduler.o option.o server.o
+OBJS =  option.o reader.o process_generator.o client.o process.o util.o
 
 all: echocompiling $(TARGET)
 	@mkdir -p $(BUILD)
@@ -25,13 +22,10 @@ echocompiling:
 
 debug: $(TARGET)
 
-$(TARGET): $(OBJS) $(ALGOS)
+$(TARGET): $(OBJS) 
 	@$(CC) $(MAIN) -o $@ $^ $(CFLAGS) -lpthread
 
 $(OBJS): %.o: %.c 
-	@$(CC) -c $< -o $@ $(CFLAGS)
-
-$(ALGOS): %.o: $(ALGOSRC)/%.c
 	@$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:

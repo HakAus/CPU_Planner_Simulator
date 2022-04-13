@@ -26,7 +26,7 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             printf ("   --fifo      simulate Fisrt Come First Served\n");
             printf ("   --sjf       simulate Non-Preemptive Shortest Job First\n");
             printf ("   --hpf       simulate Non-Preemptive hpf\n");
-            printf ("   --rr        simulate Round Robin\n");
+            printf ("   --rr <qt>       simulate Round Robin\n");
             printf ("\n");
             opt->help = TRUE;
             return;
