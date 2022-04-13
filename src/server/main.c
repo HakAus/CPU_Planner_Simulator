@@ -45,7 +45,9 @@ int main(int argc, char** argv) {
     }
 
     else if (opt.test_rr) {
-        cs = create_cpu_scheduler ("rr", clk);
+        // opt.round_robin_time_quantum
+        cs = create_cpu_scheduler ("rr", clk, opt.round_robin_time_quantum);
+        
         printf ("test_rr\n");
     }
     else {

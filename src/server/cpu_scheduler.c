@@ -34,7 +34,9 @@ cpu_scheduler_t * create_cpu_scheduler (char * algo, clk_t * clock, ...) {
         cs->print_ready_queue = print_hpf_queue;
     } else if (strcmp ("rr", algo) == 0) {
         va_list vl;
-        va_start (vl, 1);
+        va_start (vl, clock);
+        // printf("AQUI: %d\n", va_start(vl, 1));
+        
         cs->queue = create_rr_queue (va_arg (vl, int));
         va_end (vl);
         cs->enqueue = rr_enqueue;

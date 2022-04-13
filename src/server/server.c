@@ -47,10 +47,38 @@ void start_simulation(struct server_info * info) {
     // wait for threads to complete
     pthread_join(info->cpu_scheduler_thread, (void**)&(thread_exit_status));
     pthread_join(accept_client_thread_function, (void**)&(thread_exit_status));
-    pthread_join(info->input_thread, (void**)&(thread_exit_status));
     for (int i = 0; i < MAX_CLIENTS; i++) {
         pthread_join(info->job_scheduler_threads[i], (void**)&(thread_exit_status));
     }
+    pthread_join(info->input_thread, (void**)&(thread_exit_status));
+
+    // Statistics
+    cpu_t * cpu = info->cpu_scheduler->cpu;
+    
+    List * process_list = cpu->process_list;
+    
+    int count_list = process_list->count;
+    
+    int * turn_around_time_list = (int *) malloc (sizeof (int) * (count_list + 1));
+
+    int * waiting_time_list = (int *) malloc (sizeof (int) * (count_list + 1));
+    
+    double average_turn_around_time;
+    
+    double average_waiting_time;
+    
+
+    average_turn_around_time = evaluate_turn_around_time(count_list ,process_list, turn_around_time_list);
+    average_waiting_time = evaluate_waiting_time(count_list, process_list, waiting_time_list);
+
+    print_list("Waiting time", count_list, waiting_time_list);
+    print_list("Turn around time", count_list, turn_around_time_list);
+    printf("The average turn around time is: %f\n", average_turn_around_time);
+    printf("The average waiting time: %f\n", average_waiting_time);
+    printf("The total processes exucuted: %d\n", count_list);
+    
+    
+
 
     // check that threads finished correctly
     if (thread_exit_status != PTHREAD_CANCELED) {
@@ -60,6 +88,8 @@ void start_simulation(struct server_info * info) {
 
 void stop_simulation(struct server_info * info) {
     pthread_cancel(info->cpu_scheduler_thread);
+    pthread_cancel(info->accept_client_thread);
+    pthread_cancel(info->input_thread);
     for (int i = 0; i < info->client_count; i++) {
         pthread_cancel(info->job_scheduler_threads[i]);
     }
@@ -105,35 +135,6 @@ void * read_user_input(void * args)
             stop_simulation(info);
 
             printf("Se ha terminado la simulación\n");
-
-            // statics(info->cpu_scheduler->cpu);
-
-          
-            cpu_t * cpu = info->cpu_scheduler->cpu;
-            
-            List * process_list = cpu->process_list;
-           
-            int count_list = process_list->count;
-           
-            int * turn_around_time_list = (int *) malloc (sizeof (int) * (count_list + 1));
-        
-            int * waiting_time_list = (int *) malloc (sizeof (int) * (count_list + 1));
-           
-            double average_turn_around_time;
-           
-            double average_waiting_time;
-            
-
-            average_turn_around_time = evaluate_turn_around_time(count_list ,process_list, turn_around_time_list);
-            average_waiting_time = evaluate_waiting_time(count_list, process_list, waiting_time_list);
-
-            print_list("Waiting time", count_list, waiting_time_list);
-            print_list("Turn around time", count_list, turn_around_time_list);
-            printf("The average turn around time is: %f\n", average_turn_around_time);
-            printf("The average waiting time: %f\n", average_waiting_time);
-            printf("The total processes exucuted: %d\n", count_list);
-
-            
         }
     }
 

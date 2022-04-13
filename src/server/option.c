@@ -40,7 +40,14 @@ void parse_option (int argc, char ** argv, option_t * opt) {
             printf("hpf\n");
         } else if (strcmp ("--rr", argv [i]) == 0) {
             opt->test_rr = TRUE;
-            printf("rr\n");
+            if(i+1 < argc) {
+                opt->round_robin_time_quantum = atoi(argv[i+1]);
+                printf("rr\n");
+            }
+            else{
+                printf("Error: --rr requires a time quantum\n");
+                exit(1);
+            }
         } else {
             opt->help = TRUE;
             printf ("Please check arguments\n");
