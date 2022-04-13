@@ -18,8 +18,12 @@ typedef struct __process process_t;
  * pid can have value from 1 (0 means idle)
  * you SHOULD call srand before call create_process
  */
-process_t * create_process (int pid, int min_burst, int max_burst,
-                            int min_creation, int max_creation);
+process_t * create_automatic_process (int min_burst, int max_burst,
+                                      int min_creation, int max_creation);
+
+process_t * create_manual_process (int burst, int priority);
+                        
+// process_t * create_process (int pid, int burst, int priority);
 
 /* decrease cpu remain time by 1
  * return TRUE when cpu remain time becomes 0

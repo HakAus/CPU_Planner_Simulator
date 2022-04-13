@@ -13,21 +13,29 @@
  */
 #define MAX_PRIORITY 5
 
-process_t * create_process (int pid, int min_burst, int max_burst,
+process_t * create_automatic_process (int min_burst, int max_burst,
                             int min_creation, int max_creation) {
-    // if (pid == 0) {
-    //     return NULL;
-    // }
     process_t * p = (process_t *) malloc (sizeof (process_t));
 
-    p->pid = pid;
-
-    p->arrival_time = rand() % MAX_ARRIVAL_TIME;
+    p->pid = 0;
+    p->arrival_time = 0;
     p->cpu_burst_time = rand() % (max_burst - min_burst) + min_burst;
     p->cpu_remain_time = p->cpu_burst_time;
     p->termination_time = 0;
-
     p->priority = rand() % (MAX_PRIORITY);
+
+    return p;
+}
+
+process_t * create_manual_process (int burst, int priority) {
+    process_t * p = (process_t *) malloc (sizeof (process_t));
+
+    p->pid = 0;
+    p->arrival_time = 0;
+    p->cpu_burst_time = burst;
+    p->cpu_remain_time = burst;
+    p->termination_time = 0;
+    p->priority = priority;
 
     return p;
 }

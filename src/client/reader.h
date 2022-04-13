@@ -10,6 +10,13 @@
 
 struct reader_args {
     char* filename;
+    int client_socket;
+};
+
+struct connection_args {
+    int client_socket;
+    int burst;
+    int priority;
 };
 
 void init_reader(void *arg);

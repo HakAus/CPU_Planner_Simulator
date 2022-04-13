@@ -29,12 +29,11 @@ int main(int argc, char** argv) {
     option_t opt;
     parse_option (argc, argv, &opt);
 
+    int cont = 0;
     if (opt.mode !=  INVALID_OPTION_MODE) {
         if (opt.mode == AUTO_MODE) {
-            printf("Se van a generar los procesos automaticamente\n");
             init_process_generator(opt.burstMin, opt.burstMax, opt.creationMin, opt.creationMax);
         } else if (opt.mode == MANUAL_MODE) {
-            printf("Se escogio el modo manual\n");
             init_reader(opt.file);
         }
     } else {

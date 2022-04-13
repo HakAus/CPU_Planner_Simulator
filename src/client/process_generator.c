@@ -3,30 +3,13 @@
 #include "process.h"
 #include "util.h"
 
-// void * generate_processes(void * info) {
-//     struct generator_info* gi = info;
-//     while (gi->generating) {
-//         process_t * process = create_process(gi->process_id_consecutive, gi->min_burst, 
-//                                            gi->max_burst, gi->min_creation, gi->max_creation);
-//         gi->process_id_consecutive++;
-
-//         printf("Sending process to server ...\n");
-//         send_message(gi->socket_fd, process);
-//         int sleep_time = get_random_in_range(gi->min_creation, gi->max_creation);
-//         printf("Sleeping for %d seconds ...\n", sleep_time);
-//         sleep(sleep_time);
-//     }
-
-//     return NULL;
-// }
-
 pthread_t thread_list[MAX_NUMBER_OF_THREADS];
 
 void * generate_process(void * info) {
     struct generator_info* gi = info;
 
-    process_t * process = create_process(0, gi->min_burst, gi->max_burst, 
-                                         gi->min_creation, gi->max_creation);
+    process_t * process = create_automatic_process(gi->min_burst, gi->max_burst, 
+                                                   gi->min_creation, gi->max_creation);
     printf("Sending process to server ...\n");
     sleep(2); // wait 2 seconds before sending
     send_message(gi->socket_fd, process);

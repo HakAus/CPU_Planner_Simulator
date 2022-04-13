@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "client.h"
+#include "process.h"
 #include "reader.h"
 #include "util.h"
 
@@ -11,8 +13,8 @@ const int MAX_LINE_SIZE = 8;
 pthread_t thread_list[MAX_NUMBER_OF_THREADS];
 
 // https://stackoverflow.com/questions/33175857/read-line-by-line-from-a-file-and-create-a-thread-for-every-line-in-a-file-in-c
-void * read_processes(void *file_name) {
-    char* fn = (char*) file_name;
+void * read_processes(void * args) {
+    struct reader_args* info = args;
     int lines_allocated = INITIAL_MEM_ALLOC_FOR_FILE;
     char ch;
     FILE *fp;
@@ -28,8 +30,8 @@ void * read_processes(void *file_name) {
     printf("Allocated lines of text\n");
 
     // Open file
-    printf("Nombre del archivo: %s\n", fn);
-    fp = fopen(fn, "r"); // read mode
+    printf("Nombre del archivo: %s\n", info->filename);
+    fp = fopen(info->filename, "r"); // read mode
     if (fp == NULL) {
         perror("Error while opening the file.\n");
         exit(EXIT_FAILURE);
@@ -76,8 +78,18 @@ void * read_processes(void *file_name) {
         ;
         words[line][j+1]='\0';
 
+        // create thread function args
+        struct connection_args* conn_args = malloc(sizeof(struct connection_args));
+
+        // separate burst and priority from line
+        conn_args->client_socket = info->client_socket;
+        char * split = strtok(words[line], " ");
+        conn_args->burst = atoi(split);
+        split = strtok(NULL, " ");
+        conn_args->priority = atoi(split);
+
         // create a thread to send the process to the job scheduler
-        pthread_create( &sender_thread, NULL , connection_handler , words[line]);
+        pthread_create( &sender_thread, NULL , connection_handler , (void*) conn_args);
         thread_list[line] = sender_thread;
         threads_created++;
 
@@ -101,11 +113,18 @@ void * read_processes(void *file_name) {
     return NULL;
 }
 
-void *connection_handler(void* message) {
-    char* m = message;
-    sleep(2);  // wait for 2 seconds
-    printf("The message to send to the server is %s\n", m);
-    
+void *connection_handler(void* conn_args) {
+    struct connection_args* info = conn_args;
+
+    // create process
+    process_t * process = create_manual_process(info->burst, info->priority);
+    printf("Sending process to server ...\n");
+
+    // wait 2 seconds before sending
+    sleep(2);
+    send_message(info->client_socket, process);
+
+    // kill thread after server response
     pthread_exit(NULL);
 
     return NULL;
@@ -117,9 +136,12 @@ void init_reader(void *arg) {
     pthread_t reader_thread;
     int *thread_exit_status;
 
-    printf("Dentro de init reader, el nombre del archivo es: %s\n",file_name);
+    struct reader_args* args = malloc(sizeof(struct reader_args));
+
+    args->filename = file_name;
+    args->client_socket = start_connection();
     
-    pthread_create(&reader_thread, NULL, read_processes, file_name);
+    pthread_create(&reader_thread, NULL, read_processes, args);
 
     pthread_join(reader_thread, (void**)&(thread_exit_status));
 

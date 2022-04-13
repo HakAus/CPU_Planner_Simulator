@@ -38,8 +38,8 @@ void start_simulation(struct server_info * info) {
     printf("Starting simulation ...\n");
 
     // create threads
-    pthread_create(&info->cpu_scheduler_thread, NULL, cs_thread_function, (void*) info);
     info->client_count = 0;
+    pthread_create(&info->cpu_scheduler_thread, NULL, cs_thread_function, (void*) info);
     pthread_create(&info->accept_client_thread, NULL, accept_client_thread_function, (void*) info);
     pthread_create(&info->input_thread, NULL, read_user_input, (void*) info);
 
@@ -79,7 +79,7 @@ void * accept_client_thread_function(void * args) {
     struct server_info *info = args;
 
     while (info->client_count < MAX_CLIENTS) {
-        // accept a client connection
+        // wait for a client connection
         info->client_sockets[info->client_count] = accept(info->server_socket, NULL, NULL);
 
         // create a thread for the client
@@ -87,7 +87,7 @@ void * accept_client_thread_function(void * args) {
         info->client_count++;
     }
 
-    printf("All clients have connected ...\n");
+    printf("All possible clients have connected ...\n");
 
     return NULL;
 }
@@ -120,7 +120,7 @@ void * js_thread_function(void * args) {
     while (1) {
 
         // get and serialize process from client
-        for (int i = 0; i < info->client_count+1; i++) {
+        for (int i = 0; i < info->client_count; i++) {
 
             // receive message from client
             recv(info->client_sockets[i], from_client, sizeof(from_client), 0);
@@ -131,7 +131,8 @@ void * js_thread_function(void * args) {
             sscanf(from_client, "%d,%d,%d,%d,%d,%d",
                 &pid, &arrival_time, &cpu_burst_time, 
                 &cpu_remain_time, &termination_time, &priority);
-            p->pid = info->pid_consecutive++;
+            ++info->pid_consecutive;
+            p->pid = info->pid_consecutive;
             p->arrival_time = 0;
             p->cpu_burst_time = cpu_burst_time;
             p->cpu_remain_time = cpu_remain_time;
